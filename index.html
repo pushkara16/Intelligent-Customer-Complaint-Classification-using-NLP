@@ -1,0 +1,154 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Complaint Classifier</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1f2937;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 18px;
+            background: #f9fafb;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .warning {
+            color: #b45309;
+            font-weight: bold;
+        }
+
+        .success {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .note {
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Customer Complaint Classifier</h1>
+
+        <p>
+            Enter a customer complaint below to predict its category.
+            Uncertain predictions will be flagged for further checking.
+        </p>
+
+        <form method="POST">
+            <label for="complaint"><strong>Customer Complaint</strong></label>
+
+            <textarea
+                id="complaint"
+                name="complaint"
+                placeholder="Example: I was charged twice for the same transaction..."
+                required
+            >{{ complaint }}</textarea>
+
+            <button type="submit">Predict Complaint</button>
+        </form>
+
+        {% if prediction %}
+        <div class="result">
+            <h3>Prediction Result</h3>
+
+            <p>
+                <strong>Predicted Category:</strong>
+                {{ prediction }}
+            </p>
+
+            {% if confidence is not none %}
+            <p>
+                <strong>Prediction Confidence:</strong>
+                {{ "%.2f"|format(confidence * 100) }}%
+            </p>
+            {% endif %}
+
+            {% if status == "Needs Further Checking" %}
+            <p class="warning">
+                ⚠ Needs Further Checking
+            </p>
+            <p>
+                The model cannot provide a sufficiently confident prediction.
+                A human reviewer should verify the complaint category.
+            </p>
+
+            {% else %}
+            <p class="success">
+                ✓ Prediction Available
+            </p>
+            <p>
+                The model's confidence meets the configured threshold.
+                This prediction is not guaranteed to be correct.
+            </p>
+            {% endif %}
+
+            <p class="note">
+                Confidence is an estimate, not the model's actual accuracy.
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
+```
